@@ -10,6 +10,10 @@ namespace GrupoShemesh.Entities
         [Display(Name = "Nombre del Producto")]
         public string NameProduct { get; set; }
 
+        [Display(Name = "Categoria")]
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; }
+
         [Display(Name = "Img")]
         public string PhotoPath { get; set; }
 
@@ -18,11 +22,9 @@ namespace GrupoShemesh.Entities
 
         [Display(Name = "Model")]
         public string Model { get; set; }
-        [Display(Name = "Categoria")]
-        public int CategoryId { get; set; }
-        public virtual Category Category { get; set; }
 
-        public string UserId { get; set; }
+        [Display(Name = "Usuario")]
+        public string ApplicationUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

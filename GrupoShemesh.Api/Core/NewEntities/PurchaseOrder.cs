@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GrupoShemesh.Entities
 {
@@ -11,7 +7,7 @@ namespace GrupoShemesh.Entities
     {
         public int Id { get; set; }
 
-        [Display(Name="Solicitud")]
+        [Display(Name = "Solicitud")]
         public int PurchaseRequestId { get; set; }
         public virtual PurchaseRequest PurchaseRequest { get; set; }
 
@@ -34,7 +30,8 @@ namespace GrupoShemesh.Entities
         [Display(Name = "Autoriza")]
         public string Authorize { get; set; }
 
-        public string UserId { get; set; }
+        [Display(Name = "Usuario")]
+        public string ApplicationUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

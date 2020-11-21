@@ -2,14 +2,15 @@
 
 namespace GrupoShemesh.Entities
 {
-    // ... Cuadro comparativo
-    public class ComparativeChart
+    // ... Cotización de Proveedor
+    public class ProviderQuote
     {
         public int Id { get; set; }
 
-        [Display(Name = "Producto de solicitu de compra")]
-        public int PurchaseRequestDetailID { get; set; }
-        public virtual PurchaseRequestDetail PurchaseRequestDetail { get; set; }
+        // ... Detalle de produstos de solicitud de compra
+        [Display(Name ="Producto ")]
+        public int PurchaseRequestDetailId { get; set; }
+        public PurchaseRequestDetail PurchaseRequestDetail { get; set; }
 
         [Display(Name = "Proveedor")]
         public int providerId { get; set; }
@@ -38,8 +39,6 @@ namespace GrupoShemesh.Entities
         [Display(Name = "Total")]
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public double Total { get; set; } = .16;
-
-
 
         [Display(Name = "Usuario")]
         public string ApplicationUserId { get; set; }

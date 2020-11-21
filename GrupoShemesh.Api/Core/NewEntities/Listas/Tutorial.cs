@@ -23,7 +23,7 @@ namespace GrupoShemesh.Entities
         public string Description { get; set; }
 
         [Display(Name = "Usuario")]
-        public string UserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
 }

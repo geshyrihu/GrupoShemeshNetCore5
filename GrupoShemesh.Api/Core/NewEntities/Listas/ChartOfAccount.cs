@@ -15,5 +15,9 @@ namespace GrupoShemesh.Entities
 
         [Display(Name = "Codigo Sat")]
         public double CodeSat { get; set; }
+
+        [Display(Name = "Usuario")]
+        public string ApplicationUserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

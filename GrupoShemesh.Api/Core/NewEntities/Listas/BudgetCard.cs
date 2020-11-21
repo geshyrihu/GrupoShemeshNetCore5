@@ -8,19 +8,20 @@ namespace GrupoShemesh.Entities
     {
         public int Id { get; set; }
 
+        [MaxLength(4)]
         [Display(Name = "Año")]
-        public string Year { get; set; }
+        public int Year { get; set; }
 
         [Display(Name = "Cliente")]
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
 
         // ... Lista de partidas presupuestales por cedula 
+
         public virtual List<BudgetCardDetail> BudgetCardDetails { get; set; }
 
-
         [Display(Name = "Usuario")]
-        public string UserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
     }

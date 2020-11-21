@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GrupoShemesh.Entities
 {
-    // ... Cedula presupuestal Cuentas
+    // ... Cedula presupuestal Detalle
     public class BudgetCardDetail
     {
         public int Id { get; set; }
@@ -14,44 +14,52 @@ namespace GrupoShemesh.Entities
 
         [Display(Name = "Partida presupuestal")]
         public int ChartOfAccountsId { get; set; }
-        public virtual ChartOfAccount MyProperty { get; set; }
+        public virtual ChartOfAccount ChartOfAccount { get; set; }
 
         [Display(Name = "Presupuesto Mensual")]
-        public decimal MonthlyBudget { get; set; }
+        public double MonthlyBudget { get; set; }
 
         [Display(Name = "Presupuesto ejercido")]
-        public decimal ExercisedBudget { get; set; }
+        public double ExercisedBudget { get; set; }
 
         [Display(Name = "Presupuesto Acumulado")]
-        public decimal AccumulatedBudget
+        public double AccumulatedBudget
         {
             get
             {
                 return MonthlyBudget * Today;
             }
         }
-        [Display(Name = "Saldo disponible")]
-        public decimal BudgetRemaining
+        [Display(Name = "Presupueto disponible")]
+        public double BudgetRemaining
         {
             get
             {
-                return MonthlyBudget - ExercisedBudget;
+                return AccumulatedBudget - ExercisedBudget;
             }
         }
         [Display(Name = "Presupuesto Anual")]
-        public decimal YearBudget
+        public double YearBudget
         {
             get
             {
                 return MonthlyBudget * 12;
             }
         }
+        [Display(Name = "Presupuesto disponible a fin de año")]
+        public double BudgetRemainingEndYear
+        {
+            get
+            {
+                return YearBudget - ExercisedBudget;
+            }
+        }
 
         [Display(Name = "Usuario")]
-        public string UserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
-        private int Today = DateTime.Today.Month;
+        private readonly int Today = DateTime.Today.Month;
 
     }
 }

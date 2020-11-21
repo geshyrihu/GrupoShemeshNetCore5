@@ -51,24 +51,27 @@ namespace GrupoShemesh.Data
 
 
         // ... Nuevas Entidades
+        //public DbSet<ComparativeChart> ComparativeCharts { get; set; }
+        //public DbSet<MeetingSupervision> MeetingSupervisions { get; set; }
+        //public DbSet<MeetingSupervisionDetail> MeetingSupervisionDetails { get; set; }
+        //public DbSet<ProviderQuote> ProviderQuotes { get; set; }
+        //public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        //public DbSet<PurchaseRequest> PurchaseRequests { get; set; }
+        //public DbSet<PurchaseRequestDetail> PurchaseRequestDetails { get; set; }
+        //public DbSet<PurchaseProduct> PurchaseProducts { get; set; }
 
         public DbSet<BudgetCard> BudgetCards { get; set; }
         public DbSet<BudgetCardDetail> BudgetCardDetails { get; set; }
         public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
-        public DbSet<ComparativeChart> ComparativeCharts { get; set; }
-        public DbSet<MeetingSupervision> MeetingSupervisions { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductOutlet> ProductOutlets { get; set; }
         public DbSet<ProductsInventory> ProductsInventories { get; set; }
-        public DbSet<ProductsInventoryDetail> ProductsInventoryDetails { get; set; }
-        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
-        public DbSet<PurchaseProduct> PurchaseProducts { get; set; }
-        public DbSet<PurchaseRequest> PurchaseRequests { get; set; }
-        public DbSet<PurchaseRequestDetail> PurchaseRequestDetails { get; set; }
+        public DbSet<ProductsInventoryDetail> ProductsInventoryDetails  { get; set; }
         public DbSet<Tutorial> Tutorials { get; set; }
         public DbSet<UseCFDI> UseCFDIs { get; set; }
         public DbSet<WayToPay> WayToPays { get; set; }
+
 
 
 
