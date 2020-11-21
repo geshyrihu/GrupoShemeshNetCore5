@@ -4,10 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 namespace GrupoShemesh.Api.Areas.Client
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Asistente , GerenteMantenimiento")]
     public class DirectoryCondominiumController : ControllerBase
     {
         private readonly IGenericRepository<DirectoryCondominium> _genericRepository;

@@ -17,9 +17,9 @@ namespace Administration.Web.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "3.1.2");
+                .HasAnnotation("ProductVersion", "5.0.0");
 
-            modelBuilder.Entity("Administration.Models.ApplicationUser", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -114,7 +114,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Administration.Models.Bank", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Bank", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -138,7 +138,65 @@ namespace Administration.Web.Migrations
                     b.ToTable("Banks");
                 });
 
-            modelBuilder.Entity("Administration.Models.CallAdmin", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.BudgetCard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("BudgetCards");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.BudgetCardDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BudgetCardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChartOfAccountId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("ExercisedBudget")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MonthlyBudget")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("BudgetCardId");
+
+                    b.HasIndex("ChartOfAccountId");
+
+                    b.ToTable("BudgetCardDetails");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.CallAdmin", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -194,7 +252,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("CallAdmin");
                 });
 
-            modelBuilder.Entity("Administration.Models.Category", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +274,33 @@ namespace Administration.Web.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("Administration.Models.ContactEmployee", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ChartOfAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Account")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("CodeSat")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("ChartOfAccounts");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ContactEmployee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -246,7 +330,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("ContactEmployee");
                 });
 
-            modelBuilder.Entity("Administration.Models.Customer", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -281,8 +365,7 @@ namespace Administration.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Register")
-                        .IsRequired()
+                    b.Property<DateTime>("Register")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -290,7 +373,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("Administration.Models.DirectoryCondominium", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.DirectoryCondominium", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -320,7 +403,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("DirectoryCondominium");
                 });
 
-            modelBuilder.Entity("Administration.Models.Employee", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -421,7 +504,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("Employee");
                 });
 
-            modelBuilder.Entity("Administration.Models.ListCondomino", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ListCondomino", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -457,7 +540,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("ListCondomino");
                 });
 
-            modelBuilder.Entity("Administration.Models.Machinery", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Machinery", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -518,7 +601,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("Machinery");
                 });
 
-            modelBuilder.Entity("Administration.Models.MaintenanceCalendar", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MaintenanceCalendar", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -572,7 +655,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("MaintenanceCalendars");
                 });
 
-            modelBuilder.Entity("Administration.Models.MaintenanceOrder", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MaintenanceOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -587,6 +670,9 @@ namespace Administration.Web.Migrations
 
                     b.Property<int>("MaintenanceCalendarId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Observations")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -616,7 +702,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("MaintenanceOrders");
                 });
 
-            modelBuilder.Entity("Administration.Models.Meeting", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Meeting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -644,7 +730,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("Meetings");
                 });
 
-            modelBuilder.Entity("Administration.Models.MeetingDetails", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MeetingDetails", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -691,7 +777,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("MeetingDetails");
                 });
 
-            modelBuilder.Entity("Administration.Models.MeetingParticipants", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MeetingParticipants", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -722,7 +808,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("MeetingParticipants");
                 });
 
-            modelBuilder.Entity("Administration.Models.MeetingPosition", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MeetingPosition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -740,7 +826,162 @@ namespace Administration.Web.Migrations
                     b.ToTable("MeetingPositions");
                 });
 
-            modelBuilder.Entity("Administration.Models.Profession", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.PaymentMethod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("PaymentMethods");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Brand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameProduct")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ProductOutlet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("DateOutlet")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MeasurementUnits")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Use")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductOutlets");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ProductsInventory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("ProductsInventories");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ProductsInventoryDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Existence")
+                        .HasColumnType("float");
+
+                    b.Property<int>("IdProduct")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MeasurementUnits")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsInventoryId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("StockMax")
+                        .HasColumnType("float");
+
+                    b.Property<double>("StockMin")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductsInventoryId");
+
+                    b.ToTable("ProductsInventoryDetails");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.Profession", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -762,7 +1003,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("Professions");
                 });
 
-            modelBuilder.Entity("Administration.Models.Provider", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Provider", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -860,7 +1101,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("Providers");
                 });
 
-            modelBuilder.Entity("Administration.Models.ReportSupervision", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ReportSupervision", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -893,7 +1134,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("ReportSupervision");
                 });
 
-            modelBuilder.Entity("Administration.Models.Request", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Request", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -915,7 +1156,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("Requests");
                 });
 
-            modelBuilder.Entity("Administration.Models.ResponsibleArea", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ResponsibleArea", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -932,7 +1173,7 @@ namespace Administration.Web.Migrations
                     b.ToTable("ResponsibleAreas");
                 });
 
-            modelBuilder.Entity("Administration.Models.Tool", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Tool", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -990,7 +1231,82 @@ namespace Administration.Web.Migrations
                     b.ToTable("Tool");
                 });
 
-            modelBuilder.Entity("Administration.Models.WeeklyReport", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Tutorial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ProfessionId");
+
+                    b.ToTable("Tutorials");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.UseCFDI", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("UseCFDIs");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.WayToPay", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("WayToPays");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.WeeklyReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1179,15 +1495,15 @@ namespace Administration.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Administration.Models.ApplicationUser", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ApplicationUser", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Profession", "Profession")
+                    b.HasOne("GrupoShemesh.Entities.Profession", "Profession")
                         .WithMany()
                         .HasForeignKey("ProfessionId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1198,33 +1514,77 @@ namespace Administration.Web.Migrations
                     b.Navigation("Profession");
                 });
 
-            modelBuilder.Entity("Administration.Models.CallAdmin", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.BudgetCard", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.DirectoryCondominium", "DirectoryCondominium")
+                    b.Navigation("Customer");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.BudgetCardDetail", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.BudgetCard", "BudgetCard")
+                        .WithMany("BudgetCardDetails")
+                        .HasForeignKey("BudgetCardId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GrupoShemesh.Entities.ChartOfAccount", "ChartOfAccount")
+                        .WithMany()
+                        .HasForeignKey("ChartOfAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BudgetCard");
+
+                    b.Navigation("ChartOfAccount");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.CallAdmin", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GrupoShemesh.Entities.DirectoryCondominium", "DirectoryCondominium")
                         .WithMany()
                         .HasForeignKey("DirectoryCondominiumId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Employee", "Employee")
+                    b.HasOne("GrupoShemesh.Entities.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ResponsibleArea", "ResponsibleArea")
+                    b.HasOne("GrupoShemesh.Entities.ResponsibleArea", "ResponsibleArea")
                         .WithMany()
                         .HasForeignKey("ResponsibleAreaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1240,9 +1600,9 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.Category", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Category", b =>
                 {
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1250,9 +1610,19 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.ContactEmployee", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ChartOfAccount", b =>
                 {
-                    b.HasOne("Administration.Models.Employee", "Employee")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ContactEmployee", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.Employee", "Employee")
                         .WithMany("ContactsEmployees")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1261,15 +1631,15 @@ namespace Administration.Web.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Administration.Models.DirectoryCondominium", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.DirectoryCondominium", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1279,21 +1649,21 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.Employee", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Employee", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Profession", "Profession")
+                    b.HasOne("GrupoShemesh.Entities.Profession", "Profession")
                         .WithMany()
                         .HasForeignKey("ProfessionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1305,9 +1675,9 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.ListCondomino", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ListCondomino", b =>
                 {
-                    b.HasOne("Administration.Models.DirectoryCondominium", "DirectoryCondominium")
+                    b.HasOne("GrupoShemesh.Entities.DirectoryCondominium", "DirectoryCondominium")
                         .WithMany("ListCondominos")
                         .HasForeignKey("DirectoryCondominiumId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1316,21 +1686,21 @@ namespace Administration.Web.Migrations
                     b.Navigation("DirectoryCondominium");
                 });
 
-            modelBuilder.Entity("Administration.Models.Machinery", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Machinery", b =>
                 {
-                    b.HasOne("Administration.Models.Category", "Category")
+                    b.HasOne("GrupoShemesh.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1342,27 +1712,27 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.MaintenanceCalendar", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MaintenanceCalendar", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Machinery", "Machinery")
+                    b.HasOne("GrupoShemesh.Entities.Machinery", "Machinery")
                         .WithMany("MaintenanceCalendars")
                         .HasForeignKey("MachineryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Provider", "Provider")
+                    b.HasOne("GrupoShemesh.Entities.Provider", "Provider")
                         .WithMany()
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1376,27 +1746,27 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.MaintenanceOrder", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MaintenanceOrder", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.MaintenanceCalendar", "MaintenanceCalendar")
-                        .WithMany()
+                    b.HasOne("GrupoShemesh.Entities.MaintenanceCalendar", "MaintenanceCalendar")
+                        .WithMany("ListMaintenanceOrder")
                         .HasForeignKey("MaintenanceCalendarId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Provider", "Provider")
+                    b.HasOne("GrupoShemesh.Entities.Provider", "Provider")
                         .WithMany()
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1410,15 +1780,15 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.Meeting", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Meeting", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1428,21 +1798,21 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.MeetingDetails", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MeetingDetails", b =>
                 {
-                    b.HasOne("Administration.Models.Meeting", "Meeting")
+                    b.HasOne("GrupoShemesh.Entities.Meeting", "Meeting")
                         .WithMany("MeetingDetails")
                         .HasForeignKey("MeetingId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ResponsibleArea", "ResponsibleArea")
+                    b.HasOne("GrupoShemesh.Entities.ResponsibleArea", "ResponsibleArea")
                         .WithMany()
                         .HasForeignKey("ResponsibleAreaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1454,21 +1824,21 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.MeetingParticipants", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MeetingParticipants", b =>
                 {
-                    b.HasOne("Administration.Models.Meeting", "Meeting")
+                    b.HasOne("GrupoShemesh.Entities.Meeting", "Meeting")
                         .WithMany("MeetingParticipants")
                         .HasForeignKey("MeetingId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.MeetingPosition", "MeetingPosition")
+                    b.HasOne("GrupoShemesh.Entities.MeetingPosition", "MeetingPosition")
                         .WithMany()
                         .HasForeignKey("MeetingPositionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1480,21 +1850,110 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.Provider", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.PaymentMethod", b =>
                 {
-                    b.HasOne("Administration.Models.Bank", "bank")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Administration.Models.Category", "Category")
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.Product", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ProductOutlet", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ProductsInventory", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ProductsInventoryDetail", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.ProductsInventory", "ProductsInventory")
+                        .WithMany("ProductsInventoryDetails")
+                        .HasForeignKey("ProductsInventoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ProductsInventory");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.Provider", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.Bank", "bank")
+                        .WithMany()
+                        .HasForeignKey("BankId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GrupoShemesh.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1506,15 +1965,15 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.ReportSupervision", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.ReportSupervision", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1524,9 +1983,9 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.Request", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Request", b =>
                 {
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1534,21 +1993,21 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.Tool", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Tool", b =>
                 {
-                    b.HasOne("Administration.Models.Category", "Category")
+                    b.HasOne("GrupoShemesh.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1560,27 +2019,65 @@ namespace Administration.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Administration.Models.WeeklyReport", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Tutorial", b =>
                 {
-                    b.HasOne("Administration.Models.Customer", "Customer")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GrupoShemesh.Entities.Profession", "Profession")
+                        .WithMany()
+                        .HasForeignKey("ProfessionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Profession");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.UseCFDI", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.WayToPay", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.WeeklyReport", b =>
+                {
+                    b.HasOne("GrupoShemesh.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.Request", "Request")
+                    b.HasOne("GrupoShemesh.Entities.Request", "Request")
                         .WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ResponsibleArea", "ResponsibleArea")
+                    b.HasOne("GrupoShemesh.Entities.ResponsibleArea", "ResponsibleArea")
                         .WithMany()
                         .HasForeignKey("ResponsibleAreaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", "User")
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1605,7 +2102,7 @@ namespace Administration.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Administration.Models.ApplicationUser", null)
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1614,7 +2111,7 @@ namespace Administration.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Administration.Models.ApplicationUser", null)
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1629,7 +2126,7 @@ namespace Administration.Web.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Administration.Models.ApplicationUser", null)
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1638,33 +2135,48 @@ namespace Administration.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Administration.Models.ApplicationUser", null)
+                    b.HasOne("GrupoShemesh.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Administration.Models.DirectoryCondominium", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.BudgetCard", b =>
+                {
+                    b.Navigation("BudgetCardDetails");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.DirectoryCondominium", b =>
                 {
                     b.Navigation("ListCondominos");
                 });
 
-            modelBuilder.Entity("Administration.Models.Employee", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Employee", b =>
                 {
                     b.Navigation("ContactsEmployees");
                 });
 
-            modelBuilder.Entity("Administration.Models.Machinery", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.Machinery", b =>
                 {
                     b.Navigation("MaintenanceCalendars");
                 });
 
-            modelBuilder.Entity("Administration.Models.Meeting", b =>
+            modelBuilder.Entity("GrupoShemesh.Entities.MaintenanceCalendar", b =>
+                {
+                    b.Navigation("ListMaintenanceOrder");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.Meeting", b =>
                 {
                     b.Navigation("MeetingDetails");
 
                     b.Navigation("MeetingParticipants");
+                });
+
+            modelBuilder.Entity("GrupoShemesh.Entities.ProductsInventory", b =>
+                {
+                    b.Navigation("ProductsInventoryDetails");
                 });
 #pragma warning restore 612, 618
         }

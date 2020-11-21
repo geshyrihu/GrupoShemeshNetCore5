@@ -11,13 +11,10 @@ namespace GrupoShemesh.Infrastructure.Services
     {
         Task<T> GetAsyncById(int id);
         Task<T> GetAsyncById(string id);
-        Task<IEnumerable<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null,
-                                      Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
-        Task<IEnumerable<T>> GetAsyncAll(Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
-        Task<IEnumerable<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null);
-        Task<IEnumerable<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null,
-                   Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-                   string includeProperties = "");
+
+        Task<List<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null,
+                                         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                         string includeProperties = "");
         Task<T> CreateAsync(T entity);
         Task<T> DeleteAsync(int id);
         Task<T> DeleteAsync(T entity);
@@ -42,10 +39,11 @@ namespace GrupoShemesh.Infrastructure.Services
         {
             return await _unitOfWork.Context.Set<T>().FindAsync(id);
         }
-       
-        public async Task<IEnumerable<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null,
-                                  Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-                                  string includeProperties = "")
+
+
+        public async Task<List<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null,
+                                                     Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                                     string includeProperties = "")
         {
             IQueryable<T> query = _unitOfWork.Context.Set<T>();
             if (whereCondition != null)
@@ -67,41 +65,7 @@ namespace GrupoShemesh.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null,
-                                                    Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
-        {
-            IQueryable<T> query = _unitOfWork.Context.Set<T>();
-            if (whereCondition != null)
-            {
-                query = query.Where(whereCondition);
-            }
 
-            if (orderBy != null)
-            {
-                return await orderBy(query).ToListAsync();
-            }
-            else
-            {
-                return await query.ToListAsync();
-            }
-        }
-
-        public async Task<IEnumerable<T>> GetAsyncAll(Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
-        {
-            IQueryable<T> query = _unitOfWork.Context.Set<T>();
-            return await orderBy(query).ToListAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAsyncAll(Expression<Func<T, bool>> whereCondition = null)
-        {
-            IQueryable<T> query = _unitOfWork.Context.Set<T>();
-            if (whereCondition != null)
-            {
-                query = query.Where(whereCondition);
-            }
-
-            return await query.ToListAsync();
-        }
         public async Task<T> CreateAsync(T entity)
         {
             await _unitOfWork.Context.AddAsync(entity);

@@ -1,5 +1,7 @@
 ﻿using GrupoShemesh.Entities;
 using GrupoShemesh.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,7 @@ namespace GrupoShemesh.Api.Areas.Client
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Asistente , GerenteMantenimiento")]
     public class ListCondominoController : ControllerBase
     {
         private readonly IGenericRepository<ListCondomino> _genericRepository;

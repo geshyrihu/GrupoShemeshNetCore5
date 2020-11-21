@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using GrupoShemesh.Api.Core;
+using GrupoShemesh.Api.Core.DTOs;
 using GrupoShemesh.Entities;
 using GrupoShemesh.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace GrupoShemesh.Api.Areas.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "SuperUsuario")]
     public class BanksController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -23,23 +25,22 @@ namespace GrupoShemesh.Api.Areas.Admin
         }
 
         [HttpGet("{id}", Name = "GetBank")]
-        public async Task<ActionResult<BankDto>> GetAsyncById(int id)
+        public async Task<ActionResult<BankDTO>> GetAsyncById(int id)
         {
             var model = await _genericRepository.GetAsyncById(id);
-            var dto = _mapper.Map<BankDto>(model);
+            var dto = _mapper.Map<BankDTO>(model);
             return dto;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BankDto>>> GetAsyncAll()
+        public async Task<ActionResult<BankDTO[]>> GetAsyncAll()
         {
-            var data = await _genericRepository.GetAsyncAll(x => x.OrderBy(x => x.shortName));
-            var Dto = _mapper.Map<IEnumerable<BankDto>>(data);
-            return Ok(Dto);
+            var data = await _genericRepository.GetAsyncAll(null, x => x.OrderBy(x => x.shortName), "");
+            return _mapper.Map<BankDTO[]>(data);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Bank>> Post(BankDto dto)
+        public async Task<ActionResult<Bank>> Post(BankAddOrEditDTO dto)
         {
             var model = _mapper.Map<Bank>(dto);
             var entity = await _genericRepository.CreateAsync(model);
@@ -47,7 +48,7 @@ namespace GrupoShemesh.Api.Areas.Admin
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, BankDto dto)
+        public async Task<IActionResult> Put(int id, BankAddOrEditDTO dto)
         {
             var model = _mapper.Map<Bank>(dto);
             model.Id = id;

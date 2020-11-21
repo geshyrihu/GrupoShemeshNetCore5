@@ -1,8 +1,12 @@
-﻿using GrupoShemesh.Api.Helpers;
+﻿using AutoMapper;
+using GrupoShemesh.Api.Core.DTOs;
+using GrupoShemesh.Api.Helpers;
 using GrupoShemesh.Entities;
 using GrupoShemesh.Infrastructure.Services;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,19 +16,23 @@ namespace GrupoShemesh.Api.Areas.Client
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Asistente , GerenteMantenimiento")]
     public class EmployeesController : ControllerBase
     {
         private readonly IGenericRepository<Employee> _genericRepository;
         private readonly IBaseUrl _baseUrl;
         private readonly IImgService _imgService;
+        private readonly IMapper _mapper;
 
         public EmployeesController(IGenericRepository<Employee> genericRepository,
                                    IBaseUrl baseUrl,
-                                   IImgService imgService)
+                                   IImgService imgService,
+                                   IMapper mapper)
         {
             _genericRepository = genericRepository;
             _baseUrl = baseUrl;
             _imgService = imgService;
+            _mapper = mapper;
         }
 
 
@@ -44,17 +52,51 @@ namespace GrupoShemesh.Api.Areas.Client
         }
 
         [HttpPost]
-        public async Task<ActionResult<Employee>> Post(Employee model)
+        public async Task<ActionResult<Employee>> Post([FromForm] EmployeeAddOrEditDTO dto)
         {
-            var entity = await _genericRepository.CreateAsync(model);
-            return new CreatedAtRouteResult("GetEmployee", new { id = entity.Id }, entity);
+
+            var entity = _mapper.Map<Employee>(dto);
+            try
+            {
+                string path = Path.Combine("img/customers", dto.CustomerId.ToString(), "employee");
+                string pathFull = _baseUrl.GetBaseUrl(path);
+                if (dto.PhotoPath != null)
+                {
+                    string nameFile = _imgService.SaveFile(dto.PhotoPath, pathFull, 600, 600);
+                    entity.PhotoPath = nameFile;
+                }
+
+                var result = await _genericRepository.CreateAsync(entity);
+                return new CreatedAtRouteResult("GetCustomer", new { id = result.Id }, result);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Employee model)
+        public async Task<IActionResult> Put(int id, [FromForm] EmployeeAddOrEditDTO dto)
         {
-            model.Id = id;
-            await _genericRepository.UpdateAsync(model);
+            var entity = await _genericRepository.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            entity = _mapper.Map(dto, entity);
+
+            string path = Path.Combine("img/customers", dto.CustomerId.ToString(), "employee");
+            string pathFull = _baseUrl.GetBaseUrl(path);
+            if (dto.PhotoPath != null)
+            {
+                string nameFile = _imgService.SaveFile(dto.PhotoPath, pathFull, 600, 600);
+                if (entity.PhotoPath != null)
+                {
+                    await _imgService.DeleteFile(pathFull, entity.PhotoPath);
+                }
+                entity.PhotoPath = nameFile;
+            }
+            await _genericRepository.UpdateAsync(entity);
             return NoContent();
         }
 
@@ -71,23 +113,6 @@ namespace GrupoShemesh.Api.Areas.Client
             return NoContent();
         }
 
-        [HttpPut("UpdateImg/{id}")]
-        public async Task<ActionResult> UpdateImg(int id, [FromForm] IFormFile img)
-        {
-            var model = await _genericRepository.GetAsyncById(id);
-            string path = Path.Combine("img/customers", model.CustomerId.ToString(), "employee");
-            string pathFull = _baseUrl.GetBaseUrl(path);
-            if (img != null)
-            {
-                string nameFile = _imgService.SaveFile(img, pathFull, 600, 600);
-                if (model.PhotoPath != null)
-                {
-                    await _imgService.DeleteFile(pathFull, model.PhotoPath);
-                }
-                model.PhotoPath = nameFile;
-            }
-            await _genericRepository.UpdateAsync(model);
-            return NoContent();
-        }
+
     }
 }

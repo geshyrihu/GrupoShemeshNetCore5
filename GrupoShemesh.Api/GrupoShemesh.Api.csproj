@@ -27,7 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\img\Administration\accounts\" />
+    <Folder Include="wwwroot\img\customers\6\tools\" />
     <Folder Include="wwwroot\img\manuals\" />
+    <Folder Include="wwwroot\img\dash\" />
     <Folder Include="wwwroot\img\providers\" />
   </ItemGroup>
 

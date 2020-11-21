@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GrupoShemesh.Core.DTOs;
+﻿using GrupoShemesh.Core.DTOs;
 using GrupoShemesh.Data;
 using GrupoShemesh.Entities;
 using GrupoShemesh.Infrastructure.Services;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GrupoShemesh.Api.Areas.Client
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Asistente")]
     public class CallsAdminController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
         private readonly IGenericRepository<CallAdmin> _genericRepository;
 
-        public CallsAdminController(ApplicationDbContext db,IGenericRepository<CallAdmin> genericRepository)
+        public CallsAdminController(ApplicationDbContext db, IGenericRepository<CallAdmin> genericRepository)
         {
             _db = db;
             _genericRepository = genericRepository;
@@ -36,12 +38,15 @@ namespace GrupoShemesh.Api.Areas.Client
         public async Task<ActionResult<IEnumerable<CallAdmin>>> GetAll(int customerId, [FromBody] FilterCallAdminDto dto)
         {
 
-            //var data = await _genericRepository.GetAsync(x => x.CustomerId == customerId &&
-            //                                             x.DateRequest >= DateTime.Parse(dto.DateStart) && x.DateRequest <= DateTime.Parse(dto.DateEnd)
-            //                                             ,x => x.OrderByDescending(x => x.DateRequest),"");
+            if (dto.DateStart == null && dto.DateEnd == null)
+            {
+                dto.DateStart = DateTime.Today.AddMonths(-1);
+                dto.DateEnd = DateTime.Today;
+            }
+
             var data = await _db.CallAdmin.Where(x => x.CustomerId == customerId &&
-                                                      x.DateRequest >= DateTime.Parse(dto.DateStart) &&
-                                                      x.DateRequest <= DateTime.Parse(dto.DateEnd)).ToListAsync();
+                                                      x.DateRequest >= dto.DateStart &&
+                                                      x.DateRequest <= dto.DateEnd).ToListAsync();
             return Ok(data);
         }
 

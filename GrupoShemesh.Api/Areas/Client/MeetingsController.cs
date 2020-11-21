@@ -1,4 +1,6 @@
 ﻿using Administration.Enum;
+using AutoMapper;
+using GrupoShemesh.Api.Core.DTOs;
 using GrupoShemesh.Core.DTOs;
 using GrupoShemesh.Data;
 using GrupoShemesh.Entities;
@@ -17,25 +19,46 @@ namespace GrupoShemesh.Api.Areas.Client
     {
         private readonly ApplicationDbContext _db;
         private readonly IGenericRepository<Meeting> _genericRepository;
+        private readonly IMapper _mapper;
 
-        public MeetingsController(ApplicationDbContext db, IGenericRepository<Meeting> genericRepository)
+        public MeetingsController(ApplicationDbContext db,
+                                  IGenericRepository<Meeting> genericRepository,
+                                  IMapper mapper)
         {
             _db = db;
             _genericRepository = genericRepository;
+            _mapper = mapper;
         }
 
 
         [HttpGet("{id}", Name = "GetMetting")]
-        public async Task<Meeting> Get(int id)
+        public async Task<MeetingDTO> Get(int id)
         {
-            var data = await _db.Meetings.FirstOrDefaultAsync(x => x.Id == id);
-            return data;
+            //var data = await _db.Meetings.FirstOrDefaultAsync(x => x.Id == id);
+            var data = await _genericRepository.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<MeetingDTO>(data);
         }
+
+        [HttpGet("GetMeetingDetails/{idMinuta}")]
+        public async Task<ActionResult<List<MeetingDetails>>> GetMeetingDetails(int idMinuta)
+        {
+            //var result = data.GroupBy(x => x.ResponsibleArea.NameArea).Select(x => new 
+            //{x.Key, WeeklyReport = x.ToList() }).ToList();
+
+            var data = await _db.MeetingDetails.Where(x => x.MeetingId == idMinuta).ToListAsync();
+
+            var newData = _mapper.Map<List<MeetingDetailsReportDTO>>(data);
+            var result = newData.GroupBy(x => x.ResponsibleArea.NameArea)
+                .Select(x => new { x.Key, MeetingDetailsReportDTO = x.ToList() })
+                .ToList();
+            return Ok(result);
+        }
+
+
 
         [HttpGet("GetAll/{customerId}")]
         public async Task<IEnumerable<MeetingsAllDto>> GetAll(int customerId)
         {
-            //var data = await _db.Meetings.Where(x => x.CustomerId == customerId).ToListAsync();
             var data = await _db.Meetings.Select(x => new MeetingsAllDto
             {
                 Id = x.Id,
@@ -49,29 +72,20 @@ namespace GrupoShemesh.Api.Areas.Client
         }
 
         [HttpPost]
-        public async Task<ActionResult<MettingDto>> Post(MettingDto model)
+        public async Task<ActionResult<MeetingDTO>> Post(MeetingDTO dto)
         {
-            Meeting data = new Meeting()
-            {
-                Id = model.Id,
-                CustomerId = model.CustomerId,
-                Date = model.Date,
-                ETypeMeeting = model.ETypeMeeting,
-            };
+            var data = _mapper.Map<Meeting>(dto);
+
             var entity = await _genericRepository.CreateAsync(data);
             return new CreatedAtRouteResult("GetMetting", new { id = entity.Id }, entity);
+
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, MettingDto model)
+        public async Task<IActionResult> Put(int id, MeetingDTO dto)
         {
-            Meeting data = new Meeting()
-            {
-                Id = model.Id,
-                CustomerId = model.CustomerId,
-                Date = model.Date,
-                ETypeMeeting = model.ETypeMeeting,
-            };
+            var data = _mapper.Map<Meeting>(dto);
+            data.Id = id;
             await _genericRepository.UpdateAsync(data);
             return NoContent();
         }

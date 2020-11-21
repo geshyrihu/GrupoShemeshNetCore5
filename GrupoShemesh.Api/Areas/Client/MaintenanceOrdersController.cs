@@ -1,4 +1,6 @@
 ﻿using Administration.Enum;
+using AutoMapper;
+using GrupoShemesh.Api.Core.DTOs;
 using GrupoShemesh.Data;
 using GrupoShemesh.Entities;
 using GrupoShemesh.Infrastructure.Services;
@@ -17,14 +19,17 @@ namespace GrupoShemesh.Api.Areas.Client
     {
         private readonly IGenericRepository<MaintenanceCalendar> _maintenanceCalendarRepository;
         private readonly IGenericRepository<MaintenanceOrder> _maintenanceOrderRepository;
+        private readonly IMapper _mapper;
         private readonly ApplicationDbContext _db;
 
         public MaintenanceOrdersController(IGenericRepository<MaintenanceCalendar> maintenanceCalendarRepository,
                                            IGenericRepository<MaintenanceOrder> maintenanceOrderRepository,
+                                           IMapper mapper,
                                            ApplicationDbContext db)
         {
             _maintenanceCalendarRepository = maintenanceCalendarRepository;
             _maintenanceOrderRepository = maintenanceOrderRepository;
+            _mapper = mapper;
             _db = db;
         }
 
@@ -35,28 +40,29 @@ namespace GrupoShemesh.Api.Areas.Client
             return data;
         }
         [HttpGet("GetAll/{idCustomer}/{idMonth}/{idYear}")]
-        public async Task<ActionResult<IEnumerable<MaintenanceOrder>>> GetAll(int idCustomer, int idMonth, int idYear)
+        public async Task<ActionResult<List<MaintenanceOrderDTO>>> GetAll(int idCustomer, int idMonth, int idYear)
         {
             var data = await _db.MaintenanceOrders
                  .Where(x => x.CustomerId == idCustomer && x.RequestDate.Month == idMonth && x.RequestDate.Year == idYear)
                  .OrderBy(x => x.RequestDate)
                  .ToListAsync();
-            return data;
+
+            return _mapper.Map<List<MaintenanceOrderDTO>>(data);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Put([FromBody] MaintenanceOrder model)
+        [HttpPut("{idMaintenanceOrder}")]
+        public async Task<ActionResult> Put(int idMaintenanceOrder, [FromBody] MaintenanceOrderUpdateDTO dto)
         {
-            var data = await _maintenanceOrderRepository.GetAsyncById(model.Id);
-            data.Price = model.Price;
-            data.ProviderId = model.ProviderId;
-            data.ExecutionDate = model.ExecutionDate;
-            data.Status = model.Status;
+
+            var data = await _maintenanceOrderRepository.GetAsyncById(idMaintenanceOrder);
             if (data == null)
             {
                 return NotFound();
-
             }
+            data.Price = dto.Price;
+            data.ProviderId = dto.ProviderId;
+            data.ExecutionDate = dto.ExecutionDate;
+            data.Status = dto.Status;
 
 
             await _maintenanceOrderRepository.UpdateAsync(data);
@@ -70,8 +76,6 @@ namespace GrupoShemesh.Api.Areas.Client
         {
             DateTime todaysDate = DateTime.Now.Date;
             int month = todaysDate.Month - 1;
-            //int month = 2;
-            //int year = 2021;
             int year = todaysDate.Year;
             foreach (EMonth item in Enum.GetValues(typeof(EMonth)))
             {
@@ -108,7 +112,6 @@ namespace GrupoShemesh.Api.Areas.Client
                     }
                 }
             }
-            //int monthLast = todaysDate.Month;
             foreach (EMonth item in Enum.GetValues(typeof(EMonth)))
             {
                 //Si coincide el mes actual con el 

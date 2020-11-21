@@ -23,7 +23,7 @@ namespace GrupoShemesh.Api.Areas.Admin
         [HttpGet("Customers")]
         public async Task<ActionResult<List<Customer>>> ListCustomers()
         {
-            return await _db.Customers.Where(x => x.Active == true).OrderBy(x => x.NameCustomer).ToListAsync();
+            return await _db.Customers.Where(x => x.Active && x.Id != 1).OrderBy(x => x.NameCustomer).ToListAsync();
         }
 
         [HttpGet("Professions")]
@@ -187,7 +187,26 @@ namespace GrupoShemesh.Api.Areas.Admin
         }
 
 
+        // ... lista de años en cedulas Presupuestales
+        [HttpGet("GetAllYears")]
+        public async Task<ActionResult<int[]>> GetAllYears(int year)
+        {
+            var data = await _db.BudgetCards.GroupBy(x => new { x.Year })
+                                            .Select(x => new { x.Key}).ToArrayAsync();
+            return Ok(data);
+        }
 
+        // ... Catalogo de cuentas
 
+        [HttpGet("GetAllChartOfAccounts")]
+        public async Task<ActionResult<ChartOfAccount[]>> GetAllChartOfAccounts()
+        {
+            var data = await _db.ChartOfAccounts.Select(x => new
+            {
+                Id = x.Id,
+                Description= x.Description
+            }).OrderBy(x => x.Description).ToListAsync();
+            return Ok(data);
+        }
     }
 }

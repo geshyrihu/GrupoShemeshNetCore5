@@ -16,7 +16,7 @@ namespace GrupoShemesh.Api.Areas.Admin
     public class AccountsController : ControllerBase
     {
         private readonly IAccountRepository _accountRepository;
-        public AccountsController(IAccountRepository accountRepository, 
+        public AccountsController(IAccountRepository accountRepository,
                                   IAuthRepository authRepository)
         {
             _accountRepository = accountRepository;

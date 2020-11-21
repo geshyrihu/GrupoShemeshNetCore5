@@ -4,8 +4,7 @@ namespace GrupoShemesh.Entities
 {
     public class ResponsibleArea
     {
-
-        public int Id { get; set; }
+                public int Id { get; set; }
 
         [Required(ErrorMessage = "Campo {0} requerido")]
         [Display(Name = "Area Responsable ")]

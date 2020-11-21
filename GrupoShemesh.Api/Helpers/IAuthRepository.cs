@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using GrupoShemesh.Core.DTOs.Auth;
+﻿using GrupoShemesh.Core.DTOs.Auth;
 using GrupoShemesh.Entities;
+using GrupoShemesh.Infrastructure.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -9,9 +12,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using GrupoShemesh.Infrastructure.Services;
 
 namespace GrupoShemesh.Api.Helpers
 {

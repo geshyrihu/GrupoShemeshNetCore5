@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using GrupoShemesh.Api.Core.DTOs;
 using GrupoShemesh.Api.Helpers;
-using GrupoShemesh.Core.DTOs;
 using GrupoShemesh.Entities;
 using GrupoShemesh.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace GrupoShemesh.Api.Areas.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "SuperUsuario")]
     public class CustomersController : ControllerBase
     {
         private readonly IBaseUrl _baseUrl;
@@ -33,34 +35,38 @@ namespace GrupoShemesh.Api.Areas.Admin
         }
 
         [HttpGet("{id}", Name = "GetCustomer")]
-        public async Task<ActionResult<Customer>> GetAsync(int id)
+        public async Task<ActionResult<CustomerGetDto>> GetAsync(int id)
         {
             var data = await _genericRepository.GetAsyncById(id);
             if (data == null)
             {
                 return NotFound();
             }
-            return data;
+            return _mapper.Map<CustomerGetDto>(data);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetAllAsync()
+        [HttpGet("GetAllAsync/{stateId}")]
+        public async Task<ActionResult<CustomerGetDto[]>> GetAllAsync(bool stateId)
         {
-            var data = await _genericRepository.GetAsyncAll(x => x.OrderBy(x => x.NameCustomer));
-            return Ok(data);
+            var data = await _genericRepository.GetAsyncAll
+                (x => x.Active == stateId && x.Id != 1,
+                 x => x.OrderBy(x => x.NameCustomer),
+                 "");
+            return _mapper.Map<CustomerGetDto[]>(data);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Customer>> Post([FromBody] CustomerPostDto dto)
+        public async Task<ActionResult<Customer>> Post([FromForm] CustomerAddOrEditDto dto)
         {
             var entity = _mapper.Map<Customer>(dto);
+
             try
             {
-                string path = ("img/administration/customer" );
+                string path = ("img/administration/customer");
                 string pathFull = _baseUrl.GetBaseUrl(path);
-                if (dto.Img != null)
+                if (dto.PhotoPath != null)
                 {
-                    string nameFile = _imgService.SaveFile(dto.Img, pathFull, 600, 600);
+                    string nameFile = _imgService.SaveFile(dto.PhotoPath, pathFull, 600, 600);
                     entity.PhotoPath = nameFile;
                 }
 
@@ -74,30 +80,23 @@ namespace GrupoShemesh.Api.Areas.Admin
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromForm] CustomerPostDto dto)
+        public async Task<IActionResult> Put(int id, [FromForm] CustomerAddOrEditDto dto)
         {
-            //var entity = _mapper.Map<Customer>(dto);
-            var entity = new Customer()
+            var entity = await _genericRepository.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
             {
-                Id = dto.Id,
-                NameCustomer = dto.NameCustomer,
-                RFC = dto.RFC,
-                PhoneOne = dto.PhoneOne,
-                PhoneTwo = dto.PhoneTwo,
-                Adreess = dto.Adreess,
-                Register = dto.Register,
-                Active = dto.Active,
-                PhotoPath = dto.PhotoPath
-            };
-            entity.Id = id;
+                return NotFound();
+            }
+            entity = _mapper.Map(dto, entity);
+
             string path = ("img/administration/customer");
             string pathFull = _baseUrl.GetBaseUrl(path);
-            if (dto.Img != null)
+            if (dto.PhotoPath != null)
             {
-                string nameFile = _imgService.SaveFile(dto.Img, pathFull, 600, 600);
-                if (dto.PhotoPath != null)
+                string nameFile = _imgService.SaveFile(dto.PhotoPath, pathFull, 600, 600);
+                if (entity.PhotoPath != null)
                 {
-                    await _imgService.DeleteFile(pathFull, dto.PhotoPath);
+                    await _imgService.DeleteFile(pathFull, entity.PhotoPath);
                 }
                 entity.PhotoPath = nameFile;
             }

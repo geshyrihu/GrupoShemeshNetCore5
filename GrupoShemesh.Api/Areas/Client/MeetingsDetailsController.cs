@@ -1,4 +1,5 @@
 ﻿using Administration.Enum;
+using AutoMapper;
 using GrupoShemesh.Api.Core;
 using GrupoShemesh.Data;
 using GrupoShemesh.Entities;
@@ -19,14 +20,17 @@ namespace GrupoShemesh.Api.Areas.Client
         private readonly IGenericRepository<MeetingDetails> _genericRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly ApplicationDbContext _db;
+        private readonly IMapper _mapper;
 
         public MeetingsDetailsController(IGenericRepository<MeetingDetails> genericRepository,
                                          IAccountRepository accountRepository,
-                                         ApplicationDbContext db)
+                                         ApplicationDbContext db,
+                                         IMapper mapper)
         {
             _genericRepository = genericRepository;
             _accountRepository = accountRepository;
             _db = db;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}", Name = "GetMeetingsDetail")]
@@ -36,32 +40,34 @@ namespace GrupoShemesh.Api.Areas.Client
             return data;
         }
         [HttpGet("GetAll/{MeetingId}/{status}")]
-        public async Task<ActionResult<IEnumerable<MettingetailsDto>>> GetAll(int meetingId, int status)
+        public async Task<ActionResult<List<MettingetailsDto>>> GetAll(int meetingId, int status)
         {
-            var data = await _db.MeetingDetails.Where(x => x.MeetingId == meetingId)
-                .Select(x => new MettingetailsDto
-                {
-                    Id = x.Id,
-                    ResponsibleAreaId = x.ResponsibleAreaId,
-                    Status = x.Status,
-                    DeliveryDate = String.Format("{0:yyyy-MM-dd}", x.DeliveryDate),
-                    Advance = x.Advance,
-                    Title = x.Title,
-                    RequestService = x.RequestService,
-                    Observations = x.Observations,
-                    MeetingId = x.MeetingId,
+            //var data = await _db.MeetingDetails.Where(x => x.MeetingId == meetingId)
+            //    .Select(x => new MettingetailsDto
+            //    {
+            //        Id = x.Id,
+            //        ResponsibleAreaId = x.ResponsibleAreaId,
+            //        Status = x.Status,
+            //        DeliveryDate = String.Format("{0:yyyy-MM-dd}", x.DeliveryDate),
+            //        Advance = x.Advance,
+            //        Title = x.Title,
+            //        RequestService = x.RequestService,
+            //        Observations = x.Observations,
+            //        MeetingId = x.MeetingId,
 
-                }).OrderBy(x => x.Advance).ToListAsync();
+            //    }).OrderBy(x => x.Advance).ToListAsync();
 
+            var data = await _genericRepository.GetAsyncAll(x => x.MeetingId == meetingId, x => x.OrderBy(x => x.Advance), "");
+            var resutl = _mapper.Map<List<MettingetailsDto>>(data);
             if (status == 0)
             {
-                return Ok(data);
+                return Ok(resutl);
 
             }
             else
             {
                 var result = data.Where(x => x.Status == EStatus.Pendiente).ToList();
-                return Ok(result);
+                return Ok(resutl);
 
             }
         }

@@ -30,12 +30,15 @@ namespace GrupoShemesh.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Habilitamos el uso de Cors
             services.AddCors(options =>
             {
+                var frontendURL = Configuration.GetValue<string>("frontend_url");
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://luxurybuildingapp.com:1010",
-                                        "http://localhost:4200")
+                    builder
+                           //.WithOrigins(frontendURL)
+                           .AllowAnyOrigin()
                            .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
@@ -75,9 +78,7 @@ namespace GrupoShemesh.Api
               ClockSkew = TimeSpan.Zero
           });
 
-
             // Inyeccion de los servicios
-            //services.AddAutoMapper(typeof(Startup));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             IoC.AddDependency(services);
 
@@ -85,8 +86,6 @@ namespace GrupoShemesh.Api
                     .AddNewtonsoftJson(options =>
                       options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
              );
-
-
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -98,27 +97,31 @@ namespace GrupoShemesh.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GrupoShemesh.Api v1"));
             }
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GrupoShemesh.Api v1"));
-
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseCors();
+
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

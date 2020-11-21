@@ -1,10 +1,10 @@
-﻿using GrupoShemesh.Api.Helpers;
-using GrupoShemesh.Core.DTOs;
-using GrupoShemesh.Data;
+﻿using AutoMapper;
+using GrupoShemesh.Api.Core.DTOs;
+using GrupoShemesh.Api.Helpers;
 using GrupoShemesh.Entities;
 using GrupoShemesh.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,111 +16,97 @@ namespace GrupoShemesh.Api.Areas.Client
     [ApiController]
     public class ToolsController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
         private readonly IGenericRepository<Tool> _genericRepository;
-        private readonly IGenericRepository<Customer> _customerRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IImgService _imgService;
         private readonly IBaseUrl _baseUrl;
+        private readonly IMapper _mapper;
 
-        public ToolsController(ApplicationDbContext db,
+        public ToolsController(
                                IGenericRepository<Tool> genericRepository,
-                               IGenericRepository<Customer> customerRepository,
                                IAccountRepository accountRepository,
                                IImgService imgService,
-                               IBaseUrl baseUrl)
+                               IBaseUrl baseUrl,
+                               IMapper mapper)
         {
-            _db = db;
             _genericRepository = genericRepository;
-            _customerRepository = customerRepository;
             _accountRepository = accountRepository;
             _imgService = imgService;
             _baseUrl = baseUrl;
+            _mapper = mapper;
         }
 
         [HttpGet("Get/{id}", Name = "GetTool")]
-        public async Task<ActionResult<Tool>> Get(int id)
+        public async Task<ActionResult<ToolDTO>> Get(int id)
         {
             var data = await _genericRepository.GetAsyncById(id);
             if (data == null)
             {
                 return NotFound();
             }
-            return data;
+            return _mapper.Map<ToolDTO>(data);
         }
 
         [HttpGet("{customerId}")]
-        public async Task<ActionResult<IEnumerable<Tool>>> GetAll(int customerId)
+        public async Task<ActionResult<List<ToolDTO>>> GetAll(int customerId)
         {
-
-            var data = await _db.Tool.Where(x => x.CustomerId == customerId).ToListAsync();
-            return Ok(data);
+            if (customerId == 0)
+            {
+                return NotFound();
+            }
+            var data = await _genericRepository.GetAsyncAll(x => x.CustomerId == customerId,
+                                                            x => x.OrderBy(x => x.NameTool),
+                                                            "");
+            return _mapper.Map<List<ToolDTO>>(data);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Machinery>> Post([FromForm] ToolDto model)
+        public async Task<ActionResult<Tool>> Post([FromForm] ToolAddOrEditDTO dto)
         {
-            var user = await _accountRepository.GetByIdAsync(model.User);
-            string path = Path.Combine("img/customers", model.CustomerId.ToString(), "tool");
-            string pathFull = _baseUrl.GetBaseUrl(path);
-            var data = new Tool
+            var user = await _accountRepository.GetByIdAsync(dto.User);
+            var entity = _mapper.Map<Tool>(dto);
+            entity.User = user;
+            try
             {
-                Brand = model.Brand,
-                CategoryId = model.CategoryId,
-                CustomerId = model.CustomerId,
-                DateOfPurchase = model.DateOfPurchase,
-                Model = model.Modelo,
-                NameTool = model.NameTool,
-                Observations = model.Observations,
-                Serie = model.Serie,
-                State = model.State,
-                TechnicalSpecifications = model.TechnicalSpecifications,
-                User = user,
-            };
-            if (model.Img != null)
-            {
-                string nameFile = _imgService.SaveFile(model.Img, pathFull, 1280, 720);
-                if (model.PhotoPath != null)
+                string path = Path.Combine("img/customers", dto.CustomerId.ToString(), "tools");
+                string pathFull = _baseUrl.GetBaseUrl(path);
+                if (dto.PhotoPath != null)
                 {
-                    await _imgService.DeleteFile(pathFull, model.PhotoPath);
+                    string nameFile = _imgService.SaveFile(dto.PhotoPath, pathFull, 600, 600);
+                    entity.PhotoPath = nameFile;
                 }
-                data.PhotoPath = nameFile;
+
+                var result = await _genericRepository.CreateAsync(entity);
+                return new CreatedAtRouteResult("GetTool", new { id = result.Id }, result);
             }
-            await _genericRepository.CreateAsync(data);
-            return new CreatedAtRouteResult("GetTool", new { id = data.Id }, data);
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromForm] ToolDto model)
+        public async Task<IActionResult> Put(int id, [FromForm] ToolAddOrEditDTO dto)
         {
-            var user = await _accountRepository.GetByIdAsync(model.User);
-            string path = Path.Combine("img/customers", model.CustomerId.ToString(), "tool");
-            string pathFull = _baseUrl.GetBaseUrl(path);
-
-            var data = await _genericRepository.GetAsyncById(id);
-            data.Brand = model.Brand;
-            data.CategoryId = model.CategoryId;
-            data.CustomerId = model.CustomerId;
-            data.DateOfPurchase = model.DateOfPurchase;
-            data.Model = model.Modelo;
-            data.NameTool = model.NameTool;
-            data.Observations = model.Observations;
-            data.Serie = model.Serie;
-            data.State = model.State;
-            data.TechnicalSpecifications = model.TechnicalSpecifications;
-            data.User = user;
-
-            if (model.Img != null)
+            var entity = await _genericRepository.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
             {
-                string nameFile = _imgService.SaveFile(model.Img, pathFull, 1280, 720);
-                if (model.PhotoPath != null)
-                {
-                    await _imgService.DeleteFile(pathFull, model.PhotoPath);
-                }
-                data.PhotoPath = nameFile;
+                return NotFound();
             }
+            entity = _mapper.Map(dto, entity);
 
-            await _genericRepository.UpdateAsync(data);
+            string path = Path.Combine("img/customers", dto.CustomerId.ToString(), "tools");
+            string pathFull = _baseUrl.GetBaseUrl(path);
+            if (dto.PhotoPath != null)
+            {
+                string nameFile = _imgService.SaveFile(dto.PhotoPath, pathFull, 600, 600);
+                if (entity.PhotoPath != null)
+                {
+                    await _imgService.DeleteFile(pathFull, entity.PhotoPath);
+                }
+                entity.PhotoPath = nameFile;
+            }
+            await _genericRepository.UpdateAsync(entity);
             return NoContent();
         }
 
@@ -128,19 +114,14 @@ namespace GrupoShemesh.Api.Areas.Client
         [Route("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-
             var model = await _genericRepository.DeleteAsync(id);
-            string path = Path.Combine("img/customers", model.CustomerId.ToString(), "tool");
+            string path = Path.Combine("img/customers", model.CustomerId.ToString(), "tools");
             string pathFull = _baseUrl.GetBaseUrl(path);
-
             if (model.PhotoPath != "")
             {
                 await _imgService.DeleteFile(pathFull, model.PhotoPath);
             }
             return NoContent();
-
         }
-
-
     }
 }

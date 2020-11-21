@@ -21,8 +21,8 @@ namespace GrupoShemesh.Entities
         [Display(Name = "Orden de Compra")]
         public int PurchaseOrderId { get; set; }
         public virtual PurchaseOrder PurchaseOrder { get; set; }
-
-        public string UserId { get; set; }
+        [Display(Name = "Usuario")]
+        public string ApplicationUserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
     }

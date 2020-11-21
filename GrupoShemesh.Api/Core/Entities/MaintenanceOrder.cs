@@ -34,6 +34,8 @@ namespace GrupoShemesh.Entities
         public int ProviderId { get; set; }
         public virtual Provider Provider { get; set; }
 
+        public string Observations { get; set; }
+
         [Required(ErrorMessage = "El campo {0}es requerido")]
         [Display(Name = "Costo de Servicio")]
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]

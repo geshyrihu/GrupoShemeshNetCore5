@@ -7,9 +7,10 @@ namespace GrupoShemesh.Entities
     {
         public int Id { get; set; }
 
-        [Display(Name = "Producto")]
+        [Display(Name = "Producto de solicitu de compra")]
         public int PurchaseRequestDetailID { get; set; }
         public virtual PurchaseRequestDetail PurchaseRequestDetail { get; set; }
+
         [Display(Name = "Proveedor")]
         public int providerId { get; set; }
         public virtual Provider Provider { get; set; }
@@ -37,6 +38,12 @@ namespace GrupoShemesh.Entities
         [Display(Name = "Total")]
         [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
         public double Total { get; set; } = .16;
+
+
+
+        [Display(Name = "Usuario")]
+        public string ApplicationUserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
     }
 }

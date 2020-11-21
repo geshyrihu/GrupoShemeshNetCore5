@@ -41,6 +41,7 @@ namespace GrupoShemesh.Entities
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Prioridad")]
         public EPriority? Priority { get; set; }
+
         public virtual ApplicationUser User { get; set; }
 
 
